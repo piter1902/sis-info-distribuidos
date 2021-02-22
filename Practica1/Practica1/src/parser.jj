@@ -1,136 +1,149 @@
 options
 {
-static = false;
+    static = false;
 }
+
 PARSER_BEGIN(Parser)
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.xml.parsers.*;
-public class Parser implements ParserConstants
-{
-// URL donde obtener empresas y cotizaciones "actuales"
-private final static String URL = "http://www.infobolsa.es/acciones/ibex35";
-// Fichero donde obtener empresas y cotizaciones "obsoletas"
-private final static String FICHERO = "cotizacion.xml";
-Hashtable <String, Double> leeTablaDeFichero(String fichero)
-{
-try
-{
-SAXParser saxParser = ...;
-CotizacionesHandler handler = new CotizacionesHandler();
-saxParser.parse(...);
-return handler.getTabla();
-}
-catch (Exception e)
-{
-return new Hashtable<String, Double> ();
-}
-}
-void escribeTablaEnFichero(Hashtable <String, Double> tabla, String nombre)
-{
-PrintStream out = null;
-try
-{
-...
-}
-catch (Exception e)
-{
-e.printStackTrace();
-}
-}
 
-public static void main(String args [])
-{
-try
-{
-// Entrada de datos de la web
-InputStreamReader stream = ...
-Parser parser = ...
-Hashtable<String, Double> tablaCotizaciones = parser.leeTablaCotizaciones();
-// Entrada de datos de teclado
-System.out.println("Introduzca el nombre de una empresa del IBEX 35: ");
-...
-// Entrada de datos de fichero
-Hashtable<String, Double> tablaAnterior = parser.leeTablaDeFichero(FICHERO);
-// Diferencia de precios
-...
-// Salvamos los resultados en fichero
-parser.escribeTablaEnFichero(tablaCotizaciones, FICHERO);
-}
-catch (Exception e)
-{
-System.out.println("Exception " + e.getMessage());
-}
-catch (Error e)
-{
-System.out.println("Error " + e.getMessage());
-}
-}
-}
-PARSER_END(Parser)
-SKIP :
-{
-" "
-| "\r"
-| "\t"
-| "\n"
-}
-TOKEN :
-{
-< CABECERA : "<!DOCTYPE html>" >
-| < HTML : "<html>" >
-| < HTML_FIN : "</html>" >
-| < HEAD : "<head>" >
-| < HEAD_FIN : "</head>" >
-| < BODY : "<body class=\"ifb-menu-push\">" >
-| < BODY_FIN : "</body>" >
-| < NOMBRE_EMPRESA : ... >
-| < COTIZACION_EMPRESA : ... >
-| < A_FIN : "</a>" >
-| < ETIQUETA : "<" >
-| < ETIQUETA_FIN : ">" >
-| < BARRA : "/" >
-| < NUMERO: (["0"-"9"])* ( "," )? (["0"-"9"])+ >
-| < CARACTERES : ([ "A"-"Z", "a"-"z", "0"-"9", "Á", "É", "Í", "Ó", "Ú", "Ü", "Ñ",
-"á", "é", "í", "ó", "ú", "ü", "ñ", "¡", "!", "€", ".", "¿", "?", ":", ";", ",",
-"'", "=", "\"", "-", "_", "+", "º", "*", "(", ")", "\\", "@", "%", "#", "&", "[",
-"]", "|", "{", "}", "$" ])+ >
+public class Parser implements ParserConstants {
+
+    // URL donde obtener empresas y cotizaciones "actuales"
+    private final static String URL = "http://www.infobolsa.es/acciones/ibex35";
+    // Fichero donde obtener empresas y cotizaciones "obsoletas"
+    private final static String FICHERO = "cotizacion.xml";
+
+    /// Función para leer una tabla de cotizaciones del FICHERO
+    Hashtable <String, Double> leeTablaDeFichero(String fichero) {
+        try {
+            // TODO: Crear el SAXParser para el XML
+            SAXParser saxParser = ...;
+            CotizacionesHandler handler = new CotizacionesHandler();
+            saxParser.parse(...);
+            return handler.getTabla();
+        } catch (Exception e) {
+            // En caso de excepción (no existe el fichero, etc) --> Tabla vacía
+            return new Hashtable<String, Double> ();
+        }
     }
 
+    /// Función para escribir la tabla de cotizaciones en el FICHERO
+    void escribeTablaEnFichero(Hashtable <String, Double> tabla, String nombre) {
+        PrintStream out = null;
+        try {
+            // TODO: Escribir la tabla en el fichero FICHERO
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String args []) {
+        try {
+            // Entrada de datos de la web
+            // TODO: Completar con stream de la web
+            InputStreamReader stream = ...
+            // TODO: Completar con llamada a la funcion inicial del Parser
+            Parser parser = ...
+            Hashtable<String, Double> tablaCotizaciones = parser.leeTablaCotizaciones();
+
+            // Entrada de datos de teclado
+            System.out.println("Introduzca el nombre de una empresa del IBEX 35: ");
+            Scanner scanner = new Scanner(System.in);
+            String empresa = scanner.nextLine();
+
+            // Entrada de datos de fichero
+            Hashtable<String, Double> tablaAnterior = parser.leeTablaDeFichero(FICHERO);
+
+            // Diferencia de precios
+            // TODO: Calculo de la diferencia de precios
+
+            // Salvamos los resultados en fichero
+            parser.escribeTablaEnFichero(tablaCotizaciones, FICHERO);
+        } catch (Exception e) {
+            System.out.println("Exception " + e.getMessage());
+        } catch (Error e) {
+            System.out.println("Error " + e.getMessage());
+        }
+    }
+}
+
+PARSER_END(Parser)
+
+SKIP :
+{
+    " "
+    | "\r"
+    | "\t"
+    | "\n"
+}
+
+TOKEN :
+{
+    < CABECERA : "<!DOCTYPE html>" >
+    | < HTML : "<html>" >
+    | < HTML_FIN : "</html>" >
+    | < HEAD : "<head>" >
+    | < HEAD_FIN : "</head>" >
+    | < BODY : "<body class=\"ifb-menu-push\">" >
+    | < BODY_FIN : "</body>" >
+    | < NOMBRE_EMPRESA : ... >
+       // TODO: Completar con el nombre de la empresa (regex???)
+    | < COTIZACION_EMPRESA : ... >
+    | < A_FIN : "</a>" >
+    | < ETIQUETA : "<" >
+    | < ETIQUETA_FIN : ">" >
+    | < BARRA : "/" >
+    | < NUMERO: (["0"-"9"])* ( "," )? (["0"-"9"])+ >
+    | < CARACTERES : ([ "A"-"Z", "a"-"z", "0"-"9", "Á", "É", "Í", "Ó", "Ú", "Ü", "Ñ",
+    "á", "é", "í", "ó", "ú", "ü", "ñ", "¡", "!", "€", ".", "¿", "?", ":", ";", ",",
+    "'", "=", "\"", "-", "_", "+", "º", "*", "(", ")", "\\", "@", "%", "#", "&", "[",
+    "]", "|", "{", "}", "$" ])+ >
+}
+
+/// Funcion para leer la tabla de cotizaciones de la página web
 Hashtable<String, Double> leeTablaCotizaciones() :
 {
-Hashtable<String, Double> tabla = null;
+    Hashtable<String, Double> tabla = null;
 }
 {
-<CABECERA> <HTML> <HEAD> saltar() <HEAD_FIN> tabla = body() <HTML_FIN>
-{
-return tabla;
+    <CABECERA> <HTML> <HEAD> saltar() <HEAD_FIN> tabla = body() <HTML_FIN>
+    {
+        return tabla;
+    }
 }
-}
+
+/// Función para saltar la parte no importante hasta la tabla (skip lo que sea --> Comodín)
 void saltar() :
 {}
 {
-( <CARACTERES> | <NUMERO> | <ETIQUETA> | <ETIQUETA_FIN> | <BARRA> | <A_FIN> )*
-}
-Hashtable<String, Double> body() :
-{
-Hashtable<String, Double> tabla = null;
-}
-{
-<BODY> saltar() tabla = cotizaciones() <BODY_FIN>
-{
-return tabla;
-}
+    ( <CARACTERES> | <NUMERO> | <ETIQUETA> | <ETIQUETA_FIN> | <BARRA> | <A_FIN> )*
 }
 
+
+/// Función para obtener el cuerpo de la tabla
+Hashtable<String, Double> body() :
+{
+    Hashtable<String, Double> tabla = null;
+}
+{
+    <BODY> saltar() tabla = cotizaciones() <BODY_FIN>
+    {
+        return tabla;
+    }
+}
+
+/// Función para obtener la cotización de la empresa con nombre = NOMBRE_EMPRESA
 Hashtable<String, Double> cotizaciones() :
 {
-Hashtable<String, Double> tabla = new Hashtable<String, Double> ();
+    Hashtable<String, Double> tabla = new Hashtable<String, Double> ();
 }
 {
-<NOMBRE_EMPRESA> ...
-{
-return tabla;
-}
+    <NOMBRE_EMPRESA> ...
+    {
+        return tabla;
+    }
 }
