@@ -1,6 +1,6 @@
 options
 {
-    static = false;
+    STATIC = false;
 }
 
 PARSER_BEGIN(Parser)
