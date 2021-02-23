@@ -9,6 +9,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.xml.parsers.*;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
 
 public class Parser implements ParserConstants {
 
@@ -20,10 +22,10 @@ public class Parser implements ParserConstants {
     /// Función para leer una tabla de cotizaciones del FICHERO
     Hashtable <String, Double> leeTablaDeFichero(String fichero) {
         try {
-            // TODO: Crear el SAXParser para el XML
-            SAXParser saxParser = ...;
+            // Lectura del FICHERO utilizando SAXParser
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             CotizacionesHandler handler = new CotizacionesHandler();
-            saxParser.parse(...);
+            saxParser.parse(new File(FICHERO, handler));
             return handler.getTabla();
         } catch (Exception e) {
             // En caso de excepción (no existe el fichero, etc) --> Tabla vacía
@@ -34,19 +36,45 @@ public class Parser implements ParserConstants {
     /// Función para escribir la tabla de cotizaciones en el FICHERO
     void escribeTablaEnFichero(Hashtable <String, Double> tabla, String nombre) {
         PrintStream out = null;
+        XMLOutputFactory xof = XMLOutputFactory.newInstance();
+        XMLStreamWriter xsw = null;
         try {
-            // TODO: Escribir la tabla en el fichero FICHERO
+            // Escribir la tabla en el fichero FICHERO
+            out = new PrintStream(FICHERO);
+            xsw = xof.createXMLStreamWriter(out);
+            // Escribimos el fichero
+            escrituraFichero(xsw, tabla);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    /// Función interna para escribir la tabla de cotizaciones con un XMLStreamWriter
+    private void escrituraFichero(XMLStreamWriter xsw, Hashtable<String, Double> tabla) {
+        xsw.writeStartDocument();
+        xsw.writeStartElement("cotizaciones");
+        // Para cada elemento de la lista creamos un elemento dentro del fichero
+        for (Map.Entry<String, Double> el : tabla) {
+            xsw.writeStartElement("cotizacion");
+
+            xsw.writeStartElement("empresa");
+            xsw.writeCharacters(el.getKey());
+            xsw.writeEndElement();
+
+            xsw.writeStartElement("cotizaciones");
+            xsw.writeCharacters(el.getValue().toString());
+            xsw.writeEndElement();
+
+            xsw.writeEndElement();
+        }
+        xsw.writeEndElement();
+        xsw.writeEndDocument();
+    }
+
     public static void main(String args []) {
         try {
             // Entrada de datos de la web
-            // TODO: Completar con stream de la web
             InputStreamReader stream = new InputStreamReader(URL, "UTF-8");
-            // TODO: Completar con llamada a la funcion inicial del Parser
             Parser parser = new Parser(stream);
             Hashtable<String, Double> tablaCotizaciones = parser.leeTablaCotizaciones();
 
@@ -60,6 +88,12 @@ public class Parser implements ParserConstants {
 
             // Diferencia de precios
             // TODO: Calculo de la diferencia de precios
+            Double cotizacionAnterior = tablaAnterior.get(empresa);
+            if (cotizacionAnterior!= null) {
+                // Existe una cotizacion anterior
+                // TODO: Hacer una comparacion tipo -> La cotizacion ha subido X puntos
+            }
+            // TODO: Mostrar la cotizacion actual de la empresa
 
             // Salvamos los resultados en fichero
             parser.escribeTablaEnFichero(tablaCotizaciones, FICHERO);
