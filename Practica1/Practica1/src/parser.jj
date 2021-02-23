@@ -45,9 +45,9 @@ public class Parser implements ParserConstants {
         try {
             // Entrada de datos de la web
             // TODO: Completar con stream de la web
-            InputStreamReader stream = ...
+            InputStreamReader stream = new InputStreamReader(URL, "UTF-8");
             // TODO: Completar con llamada a la funcion inicial del Parser
-            Parser parser = ...
+            Parser parser = new Parser(stream);
             Hashtable<String, Double> tablaCotizaciones = parser.leeTablaCotizaciones();
 
             // Entrada de datos de teclado
@@ -90,9 +90,8 @@ TOKEN :
     | < HEAD_FIN : "</head>" >
     | < BODY : "<body class=\"ifb-menu-push\">" >
     | < BODY_FIN : "</body>" >
-    | < NOMBRE_EMPRESA : ... >
-       // TODO: Completar con el nombre de la empresa (regex???)
-    | < COTIZACION_EMPRESA : ... >
+    | < NOMBRE_EMPRESA : "<td class=\"name\">" >
+    | < COTIZACION_EMPRESA : "<td class=\"price flop\">" >
     | < A_FIN : "</a>" >
     | < ETIQUETA : "<" >
     | < ETIQUETA_FIN : ">" >
@@ -102,6 +101,10 @@ TOKEN :
     "á", "é", "í", "ó", "ú", "ü", "ñ", "¡", "!", "€", ".", "¿", "?", ":", ";", ",",
     "'", "=", "\"", "-", "_", "+", "º", "*", "(", ")", "\\", "@", "%", "#", "&", "[",
     "]", "|", "{", "}", "$" ])+ >
+    | < TABLE : "<table class=\"fullTable\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" >
+    | < TBODY : "<tbody>" >
+    | <TABLE_FIN : "</table>" >
+    | <TD_FIN : "</td>" >
 }
 
 /// Funcion para leer la tabla de cotizaciones de la página web
@@ -140,10 +143,48 @@ Hashtable<String, Double> body() :
 Hashtable<String, Double> cotizaciones() :
 {
     Hashtable<String, Double> tabla = new Hashtable<String, Double> ();
+    String empresa = null;
+    double cotizacion = 0;
 }
 {
-    <NOMBRE_EMPRESA> ...
+     <TABLE> saltar() <TBODY> (empresa = empresa() cotizacion = cotizacion()
+     { tabla.put(empresa, cotizacion);}
+     saltar())+ <TABLE_FIN>
     {
         return tabla;
+    }
+}
+
+/// Función para obtener el nombre de la empresa
+String empresa() :
+{
+    StringBuilder nombreCompleto = new StringBuilder();
+    String nombre = null;
+}
+{
+    <NOMBRE_EMPRESA> <ETIQUETA> ( <CARACTERES> | <BARRA> )* <ETIQUETA_FIN>
+    (
+        nombre = <CARACTERES>
+        {nombreCompleto.append(nombre);}
+    )+
+    <A_FIN><TD_FIN>
+    {
+        return nombreCompleto;
+    }
+}
+
+/// Función para obtener la cotizacion de una empresa
+Double cotizacion() :
+{
+    Double cotizacion = 0;
+}
+{
+    <COTIZACION_EMPRESA>
+    (
+        cotizacion = <NUMERO>
+    )
+    <TD_FIN>
+    {
+        return cotizacion;
     }
 }
