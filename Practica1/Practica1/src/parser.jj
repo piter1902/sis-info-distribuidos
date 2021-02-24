@@ -10,6 +10,7 @@ import java.net.*;
 import java.util.*;
 import javax.xml.parsers.*;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 public class Parser implements ParserConstants {
@@ -40,7 +41,7 @@ public class Parser implements ParserConstants {
         XMLStreamWriter xsw = null;
         try {
             // Escribir la tabla en el fichero FICHERO
-            out = new PrintStream(FICHERO);
+            out = new PrintStream(nombre);
             xsw = xof.createXMLStreamWriter(out);
             // Escribimos el fichero
             escrituraFichero(xsw, tabla);
@@ -50,11 +51,11 @@ public class Parser implements ParserConstants {
     }
 
     /// Función interna para escribir la tabla de cotizaciones con un XMLStreamWriter
-    private void escrituraFichero(XMLStreamWriter xsw, Hashtable<String, Double> tabla) {
+    private void escrituraFichero(XMLStreamWriter xsw, Hashtable<String, Double> tabla) throws XMLStreamException {
         xsw.writeStartDocument();
         xsw.writeStartElement("cotizaciones");
         // Para cada elemento de la lista creamos un elemento dentro del fichero
-        for (Map.Entry<String, Double> el : tabla) {
+        for (Map.Entry<String, Double> el : tabla.entrySet()) {
             xsw.writeStartElement("cotizacion");
 
             xsw.writeStartElement("empresa");
@@ -103,6 +104,7 @@ public class Parser implements ParserConstants {
             System.out.println("Error " + e.getMessage());
         }
     }
+}}
 }
 
 PARSER_END(Parser)
