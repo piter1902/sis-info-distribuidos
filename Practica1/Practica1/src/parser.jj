@@ -13,7 +13,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-public class Parser implements ParserConstants {
+public class Parser {
 
     // URL donde obtener empresas y cotizaciones "actuales"
     private final static String URL = "http://www.infobolsa.es/acciones/ibex35";
@@ -133,9 +133,9 @@ TOKEN :
     | < ETIQUETA_FIN : ">" >
     | < BARRA : "/" >
     | < NUMERO: (["0"-"9"])* ( "," )? (["0"-"9"])+ >
-    | < CARACTERES : ([ "A"-"Z", "a"-"z", "0"-"9", "Á", "É", "Í", "Ó", "Ú", "Ü", "Ñ",
-    "á", "é", "í", "ó", "ú", "ü", "ñ", "¡", "!", "€", ".", "¿", "?", ":", ";", ",",
-    "'", "=", "\"", "-", "_", "+", "º", "*", "(", ")", "\\", "@", "%", "#", "&", "[",
+    | < CARACTERES : ([ "A"-"Z", "a"-"z", "0"-"9", "\u00c1", "\u00c9", "\u00cd", "\u00d3", "\u00da", "\u00dc", "\u00d1",
+    "\u00e1", "\u00e9", "\u00ed", "\u00f3", "\u00fa", "\u00fc", "\u00f1", "\u00a1", "!", "\u00e2", ".", "\u00bf", "?", ":", ";",
+    ",", "'", "=", "\"", "-", "_", "+", "\u00ba", "*", "(", ")", "\\", "@", "%", "#", "&", "[",
     "]", "|", "{", "}", "$" ])+ >
     | < TABLE : "<table class=\"fullTable\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" >
     | < TBODY : "<tbody>" >
@@ -195,13 +195,13 @@ Hashtable<String, Double> cotizaciones() :
 String empresa() :
 {
     StringBuilder nombreCompleto = new StringBuilder();
-    String nombre = null;
+    Token nombre = null;
 }
 {
     <NOMBRE_EMPRESA> <ETIQUETA> ( <CARACTERES> | <BARRA> )* <ETIQUETA_FIN>
     (
         nombre = <CARACTERES>
-        {nombreCompleto.append(nombre);}
+        {nombreCompleto.append(nombre.image);}
     )+
     <A_FIN><TD_FIN>
     {
@@ -212,7 +212,7 @@ String empresa() :
 /// Función para obtener la cotizacion de una empresa
 Double cotizacion() :
 {
-    Double cotizacion = 0;
+    Token cotizacion;
 }
 {
     <COTIZACION_EMPRESA>
@@ -221,6 +221,6 @@ Double cotizacion() :
     )
     <TD_FIN>
     {
-        return cotizacion;
+        return Double.parseDouble(cotizacion.image);
     }
 }
