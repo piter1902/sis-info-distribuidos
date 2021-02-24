@@ -53,7 +53,7 @@ public class Parser {
     /// Función interna para escribir la tabla de cotizaciones con un XMLStreamWriter
     private void escrituraFichero(XMLStreamWriter xsw, Hashtable<String, Double> tabla) throws XMLStreamException {
         xsw.writeStartDocument();
-        xsw.writeStartElement("cotizaciones");
+        xsw.writeStartElement("lista_cotizaciones");
         // Para cada elemento de la lista creamos un elemento dentro del fichero
         for (Map.Entry<String, Double> el : tabla.entrySet()) {
             xsw.writeStartElement("cotizacion");
@@ -129,6 +129,7 @@ TOKEN :
     | < NOMBRE_EMPRESA : "<td class=\"name\">" >
     | < COTIZACION_EMPRESA_POS : "<td class=\"price top\">" >
     | < COTIZACION_EMPRESA_NEG : "<td class=\"price flop\">" >
+    | < COTIZACION_EMPRESA_EQ : "<td class=\"price equal\">" >
     | < A_FIN : "</a>" >
     | < ETIQUETA : "<" >
     | < ETIQUETA_FIN : ">" >
@@ -220,7 +221,7 @@ Double cotizacion() :
     Token cotizacion;
 }
 {
-    ( <COTIZACION_EMPRESA_POS> | <COTIZACION_EMPRESA_NEG> )
+    ( <COTIZACION_EMPRESA_POS> | <COTIZACION_EMPRESA_NEG> | <COTIZACION_EMPRESA_EQ> )
     (
         cotizacion = <NUMERO>
     )
