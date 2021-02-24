@@ -127,7 +127,8 @@ TOKEN :
     | < BODY : "<body class=\"ifb-menu-push\">" >
     | < BODY_FIN : "</body>" >
     | < NOMBRE_EMPRESA : "<td class=\"name\">" >
-    | < COTIZACION_EMPRESA : "<td class=\"price flop\">" >
+    | < COTIZACION_EMPRESA_POS : "<td class=\"price top\">" >
+    | < COTIZACION_EMPRESA_NEG : "<td class=\"price flop\">" >
     | < A_FIN : "</a>" >
     | < ETIQUETA : "<" >
     | < ETIQUETA_FIN : ">" >
@@ -139,8 +140,10 @@ TOKEN :
     "]", "|", "{", "}", "$" ])+ >
     | < TABLE : "<table class=\"fullTable\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">" >
     | < TBODY : "<tbody>" >
-    | <TABLE_FIN : "</table>" >
-    | <TD_FIN : "</td>" >
+    | < TABLE_FIN : "</table>" >
+    | < TD_FIN : "</td>" >
+    | < TROW : "<tr class=\"normal\">" >
+    //| < TROW_FIN : "</tr>" >
 }
 
 /// Funcion para leer la tabla de cotizaciones de la página web
@@ -159,7 +162,7 @@ Hashtable<String, Double> leeTablaCotizaciones() :
 void saltar() :
 {}
 {
-    ( <CARACTERES> | <NUMERO> | <ETIQUETA> | <ETIQUETA_FIN> | <BARRA> | <A_FIN> )*
+    ( <CARACTERES> | <NUMERO> | <ETIQUETA> | <ETIQUETA_FIN> | <BARRA> | <A_FIN> | <TD_FIN> )*
 }
 
 
@@ -169,7 +172,7 @@ Hashtable<String, Double> body() :
     Hashtable<String, Double> tabla = null;
 }
 {
-    <BODY> saltar() tabla = cotizaciones() <BODY_FIN>
+    <BODY> saltar() tabla = cotizaciones() saltar() <BODY_FIN>
     {
         return tabla;
     }
@@ -183,9 +186,11 @@ Hashtable<String, Double> cotizaciones() :
     double cotizacion = 0;
 }
 {
-     <TABLE> saltar() <TBODY> (empresa = empresa() cotizacion = cotizacion()
-     { tabla.put(empresa, cotizacion);}
-     saltar())+ <TABLE_FIN>
+     <TABLE> saltar() <TBODY> ( <TROW> saltar() empresa = empresa() cotizacion = cotizacion()
+         {
+            tabla.put(empresa, cotizacion);
+         }
+     saltar()  )+ <TABLE_FIN>
     {
         return tabla;
     }
@@ -215,12 +220,12 @@ Double cotizacion() :
     Token cotizacion;
 }
 {
-    <COTIZACION_EMPRESA>
+    ( <COTIZACION_EMPRESA_POS> | <COTIZACION_EMPRESA_NEG> )
     (
         cotizacion = <NUMERO>
     )
     <TD_FIN>
     {
-        return Double.parseDouble(cotizacion.image);
+        return Double.parseDouble(cotizacion.image.replace(",", "."));
     }
 }
