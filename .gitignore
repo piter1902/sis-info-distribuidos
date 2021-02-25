@@ -488,3 +488,11 @@ Thumbs.db
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/java,androidstudio,intellij+all
+Practica1/Practica1/src/ParseException.java
+Practica1/Practica1/src/Parser.java
+Practica1/Practica1/src/ParserConstants.java
+Practica1/Practica1/src/ParserTokenManager.java
+Practica1/Practica1/src/SimpleCharStream.java
+Practica1/Practica1/src/Token.java
+Practica1/Practica1/src/TokenMgrError.java
+Practica1/Practica1/src/cotizacion.xml

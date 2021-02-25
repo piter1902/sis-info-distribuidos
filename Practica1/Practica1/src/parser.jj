@@ -8,6 +8,7 @@ PARSER_BEGIN(Parser)
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.lang.Math;
 import javax.xml.parsers.*;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,7 +21,7 @@ public class Parser {
     // Fichero donde obtener empresas y cotizaciones "obsoletas"
     private final static String FICHERO = "cotizacion.xml";
 
-    /// Función para leer una tabla de cotizaciones del FICHERO
+    /// Función para leer una tabla de cotizaciones del FICHCotizacionesHandlerERO
     Hashtable <String, Double> leeTablaDeFichero(String fichero) {
         try {
             // Lectura del FICHERO utilizando SAXParser
@@ -87,14 +88,28 @@ public class Parser {
             // Entrada de datos de fichero
             Hashtable<String, Double> tablaAnterior = parser.leeTablaDeFichero(FICHERO);
 
-            // Diferencia de precios
-            // TODO: Calculo de la diferencia de precios
+
+            // Obtenemos las cotizaciones de la empresa indicada de la ejecución actual y de la anterior
             Double cotizacionAnterior = tablaAnterior.get(empresa);
-            if (cotizacionAnterior!= null) {
-                // Existe una cotizacion anterior
-                // TODO: Hacer una comparacion tipo -> La cotizacion ha subido X puntos
+            Double cotizacionActual = tablaCotizaciones.get(empresa);
+
+            if (cotizacionActual != null){
+                // La empresa indicada está en la lista obtenida del parser
+                if (cotizacionAnterior!= null) {
+                    // Existe una cotizacion anterior
+                    Double diferencia = cotizacionActual - cotizacionAnterior;
+                    if (diferencia < 0.0){
+                        System.out.println("La cotizacion ha bajado " + Math.abs(diferencia) + " puntos.");
+                    } else if(diferencia > 0.0){
+                        System.out.println("La cotizacion ha subido " + diferencia + " puntos.");
+                    }else{
+                        System.out.println("La cotizacion no ha variado con respecto a la ejecucion anterior");
+                    }
+                }
+                System.out.println("La cotizacion actual de la empresa '" + empresa + "' es: " + cotizacionActual);
+            }else{
+                System.out.println("No se encuentra informacion de la empresa " + empresa);
             }
-            // TODO: Mostrar la cotizacion actual de la empresa
 
             // Salvamos los resultados en fichero
             parser.escribeTablaEnFichero(tablaCotizaciones, FICHERO);
