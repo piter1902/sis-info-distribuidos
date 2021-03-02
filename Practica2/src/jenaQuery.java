@@ -5,7 +5,7 @@ import org.apache.jena.rdf.model.*;
 
 public class jenaQuery {
     public static void main(String[] args) {
-        String tendencias[] = {"Neymar", "Iago_Aspas", "Lionel Messi"};
+        String tendencias[] = {"Neymar", "Iago_Aspas", "Lionel Messi", "Prueba"};
         Set<String> resultados = new HashSet<String>();
         String sparqlEndpoint = "http://dbpedia-live.openlinksw.com/sparql";
         for (String tendencia : tendencias) {
@@ -35,16 +35,28 @@ public class jenaQuery {
             // Dentro de dbp:wikiPageUsesTemplate:
             String wikiEndpoints[] = {"dbt:FIFA_player", "dbt:UEFA_player"};
 
-            String askQuery = ...
+            String askQuery = String.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                    "PREFIX yago: <http://live.dbpedia.org/class/yago/> " +
+                    "PREFIX rdfs: <https://www.w3.org/2000/01/rdf-schema#>" +
+                    "ASK { {?x rdf:type yago:FootballPlayer110101634 .}" +
+                    "UNION " +
+                    "{?x rdfs:label \"%s\" }}", tendencia);
+
             org.apache.jena.query.Query query = QueryFactory.create(askQuery);
+//            query.setPrefix("umbel-rc", "http://umbel.org/umbel/rc/SoccerPlayer");
+//            query.setPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+            System.out.println("Query: " + query.toString());
             QueryExecution exec = QueryExecutionFactory.sparqlService(
                     sparqlEndpoint, query);
             if (exec.execAsk())
                 resultados.add(tendencia);
         }
+
+        mostrarResultados(tendencias, resultados);
     }
 
-    private void mostrarResultados(String tendencias[], Set<String> resultados) {
+    private static void mostrarResultados(String tendencias[], Set<String> resultados) {
+        System.out.println("Longitud de resultados: " + resultados.toArray().length);
         for (String tendencia : tendencias) {
             if (resultados.contains(tendencia)) {
                 System.out.println("La tendencia: " + tendencia + " es un jugador de futbol");
