@@ -7,7 +7,8 @@ import java.util.Set;
 
 public class jenaQuery {
     public static void main(String[] args) {
-        String tendencias[] = {"Neymar", "Iago_Aspas", "Lionel Messi", "Prueba", "Iker_Casillas", "Cristiano_Ronaldo"};
+        String tendencias[] = {"Neymar", "Iago_Aspas", "Lionel Messi", "Prueba", "Iker_Casillas", "Cristiano_Ronaldo",
+                "Torres", "Ronaldo", "Pablo Iglesias", ""};
         Set<String> resultados = new HashSet<String>();
         String sparqlEndpoint = "http://dbpedia-live.openlinksw.com/sparql";
         for (String tendencia : tendencias) {
@@ -38,6 +39,34 @@ public class jenaQuery {
             String wikiEndpoints[] = {"dbt:FIFA_player", "dbt:UEFA_player"};
 
             String tendenciaWithSpaces = tendencia.replace("_", " ");
+//            String askQuery = String.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+//                            "PREFIX yago: <http://dbpedia.org/class/yago/> " +
+//                            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+//                            "PREFIX dct: <http://purl.org/dc/terms/>" +
+//                            "PREFIX dbc: <http://dbpedia.org/page/Category:>" +
+//                            "PREFIX dbp: <http://dbpedia.org/property/wikiPageUsesTemplate>" +
+//                            "PREFIX dbt: <http://dbpedia.org/resource/Template:>" +
+//                            "ASK WHERE {" +
+//                            "{ ?x rdf:type yago:FootballPlayer110101634 . ?x rdfs:label \"%s\"@en }" +
+//                            "UNION" +
+//                            "{ ?x rdf:type yago:LaLigaFootballers . ?x rdfs:label \"%s\"@en }" +
+//                            "UNION" +
+//                            "{ ?x rdf:type yago:FootballPlayer110101634 . ?x rdfs:label \"%s\"@en }" + // Por que se repite?
+//                            "UNION" +
+//                            "{ ?x dct:subject dbc:LaLigaFootballers . ?x rdfs:label \"%s\"@en }" +
+//                            "UNION" +
+//                            "{ ?x dct:subject dbc:Spanish_footballers . ?x rdfs:label \"%s\"@en }" +
+//                            "UNION" +
+//                            "{ ?x dct:subject dbc:Spain_international_footballers . ?x rdfs:label \"%s\"@en }" +
+//                            "UNION" +
+//                            "{ ?x dbp:wikiPageUsesTemplate dbt:FIFA_player . ?x rdfs:label \"%s\"@en }" +
+//                            "UNION" +
+//                            "{ ?x dbp:wikiPageUsesTemplate dbt:UEFA_player . ?x rdfs:label \"%s\"@en } }"
+//                    , tendenciaWithSpaces, tendenciaWithSpaces,
+//                    tendenciaWithSpaces, tendenciaWithSpaces,
+//                    tendenciaWithSpaces, tendenciaWithSpaces,
+//                    tendenciaWithSpaces, tendenciaWithSpaces);
+
             String askQuery = String.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
                             "PREFIX yago: <http://dbpedia.org/class/yago/> " +
                             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
@@ -46,26 +75,23 @@ public class jenaQuery {
                             "PREFIX dbp: <http://dbpedia.org/property/wikiPageUsesTemplate>" +
                             "PREFIX dbt: <http://dbpedia.org/resource/Template:>" +
                             "ASK WHERE {" +
-                            "{ ?x rdf:type yago:FootballPlayer110101634 . ?x rdfs:label \"%s\"@en }" +
+                            "{ ?x rdf:type yago:FootballPlayer110101634 . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") }" +
                             "UNION" +
-                            "{ ?x rdf:type yago:LaLigaFootballers . ?x rdfs:label \"%s\"@en }" +
+                            "{ ?x rdf:type yago:LaLigaFootballers . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") }" +
                             "UNION" +
-                            "{ ?x rdf:type yago:FootballPlayer110101634 . ?x rdfs:label \"%s\"@en }" + // Por que se repite?
+                            "{ ?x dct:subject dbc:LaLigaFootballers . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") }" +
                             "UNION" +
-                            "{ ?x dct:subject dbc:LaLigaFootballers . ?x rdfs:label \"%s\"@en }" +
+                            "{ ?x dct:subject dbc:Spanish_footballers . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") }" +
                             "UNION" +
-                            "{ ?x dct:subject dbc:Spanish_footballers . ?x rdfs:label \"%s\"@en }" +
+                            "{ ?x dct:subject dbc:Spain_international_footballers . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") }" +
                             "UNION" +
-                            "{ ?x dct:subject dbc:Spain_international_footballers . ?x rdfs:label \"%s\"@en }" +
+                            "{ ?x dbp:wikiPageUsesTemplate dbt:FIFA_player . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") }" +
                             "UNION" +
-                            "{ ?x dbp:wikiPageUsesTemplate dbt:FIFA_player . ?x rdfs:label \"%s\"@en }" +
-                            "UNION" +
-                            "{ ?x dbp:wikiPageUsesTemplate dbt:UEFA_player . ?x rdfs:label \"%s\"@en } }"
-                    , tendenciaWithSpaces, tendenciaWithSpaces,
+                            "{ ?x dbp:wikiPageUsesTemplate dbt:UEFA_player . ?x rdfs:label ?y . FILTER regex(?y, \"%s.*\") } }",
+                    tendenciaWithSpaces, tendenciaWithSpaces,
                     tendenciaWithSpaces, tendenciaWithSpaces,
                     tendenciaWithSpaces, tendenciaWithSpaces,
                     tendenciaWithSpaces, tendenciaWithSpaces);
-
             org.apache.jena.query.Query query = QueryFactory.create(askQuery);
 //            query.setPrefix("umbel-rc", "http://umbel.org/umbel/rc/SoccerPlayer");
 //            query.setPrefix("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
