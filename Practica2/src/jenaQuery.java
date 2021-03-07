@@ -12,13 +12,14 @@ public class jenaQuery {
 //                "Torres", "Ronaldo", "Pablo Iglesias", ""};
 
         // Dynamic version
-        List<String> tendencias = new ArrayList<>();//getTwitterTrends();
+        List<String> tendencias = getTwitterTrends();
 
         Set<String> resultados = new HashSet<String>();
         String sparqlEndpointLive = "http://dbpedia-live.openlinksw.com/sparql";
         String sparqlEndpoint = "https://dbpedia.org/sparql";
         tendencias.add("Neymar_Jr");
         tendencias.add("Neymar");
+        tendencias.add("Messi");
 
         for (String tendencia : tendencias) {
 
@@ -34,8 +35,6 @@ public class jenaQuery {
             String wikiEndpoints[] = {"dbt:FIFA_player", "dbt:UEFA_player"};
 
             String tendenciaWithoutSpaces = tendencia.replace(" ", "_");
-
-            System.out.println("Buscando: " + tendenciaWithoutSpaces + " ...");
 
             String askQuery = String.format("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
                             "PREFIX yago: <http://dbpedia.org/class/yago/> " +
@@ -75,20 +74,21 @@ public class jenaQuery {
 
             // Esta consulta se hace en caso de no sea futbolista con la consulta ASK anteriror
             // Se hace sobre la dbpedia original ya que se han tenido problemas de busqueda
-            String selectQuery = String.format("PREFIX dbo: <http://dbpedia.org/ontology/>" +
-                    "PREFIX dbr: <http://dbpedia.org/resource/>" +
-                    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
-                    "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
-                    "PREFIX yago: <http://dbpedia.org/class/yago/>" +
-                    "PREFIX umbel-rc: <http://umbel.org/umbel/rc/>" +
-                    "SELECT DISTINCT ?redirects " +
-                    "WHERE " +
-                    "{ {dbr:%s dbo:wikiPageRedirects ?redirects . ?redirects rdf:type dbo:SoccerPlayer}" +
-                    "UNION" +
-                    "{ dbr:%s dbo:wikiPageRedirects ?redirects . ?redirects rdf:type yago:FootballPlayer110101634}" +
-                    "UNION" +
-                    "{ dbr:%s dbo:wikiPageRedirects ?redirects . ?redirects rdf:type umbel-rc:SoccerPlayer}}",
-                    tendenciaWithoutSpaces, tendenciaWithoutSpaces,tendenciaWithoutSpaces);
+            String selectQuery =
+                    String.format("PREFIX dbo: <http://dbpedia.org/ontology/>" +
+                            "PREFIX dbr: <http://dbpedia.org/resource/>" +
+                            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" +
+                            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                            "PREFIX yago: <http://dbpedia.org/class/yago/>" +
+                            "PREFIX umbel-rc: <http://umbel.org/umbel/rc/>" +
+                            "SELECT DISTINCT ?redirects " +
+                            "WHERE " +
+                            "{ {dbr:%s dbo:wikiPageRedirects ?redirects . ?redirects rdf:type dbo:SoccerPlayer }" +
+                            "UNION" +
+                            "{ dbr:%s dbo:wikiPageRedirects ?redirects . ?redirects rdf:type yago:FootballPlayer110101634}" +
+                            "UNION" +
+                            "{ dbr:%s dbo:wikiPageRedirects ?redirects . ?redirects rdf:type umbel-rc:SoccerPlayer}}",
+                            tendenciaWithoutSpaces, tendenciaWithoutSpaces, tendenciaWithoutSpaces, tendenciaWithoutSpaces);
 
             query = QueryFactory.create(selectQuery);
             exec = QueryExecutionFactory.sparqlService(
@@ -98,8 +98,9 @@ public class jenaQuery {
                 while (results.hasNext()) {
                     QuerySolution qs = results.nextSolution();
                     RDFNode n = qs.get("?redirects");
+
                     System.out.println("Obtenido: " + n.toString());
-                    if (!n.isLiteral()){
+                    if (!n.isLiteral()) {
                         resultados.add(tendencia);
                     }
                 }
