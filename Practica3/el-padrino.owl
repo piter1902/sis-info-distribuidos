@@ -1,0 +1,241 @@
+Prefix: owl: <http://www.w3.org/2002/07/owl#>
+Prefix: rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+Prefix: rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+Prefix: xml: <http://www.w3.org/XML/1998/namespace>
+Prefix: xsd: <http://www.w3.org/2001/XMLSchema#>
+
+
+
+Ontology: <http://sid.cps.unizar.es/>
+
+
+ObjectProperty: <http://sid.cps.unizar.es/abueloDe>
+
+    SubPropertyOf: 
+        owl:topObjectProperty
+    
+    SubPropertyChain: 
+        <http://sid.cps.unizar.es/tieneHijo> o <http://sid.cps.unizar.es/tieneHijo>
+    
+    InverseOf: 
+        <http://sid.cps.unizar.es/nietoDe>
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/cónyugeDe>
+
+    SubPropertyOf: 
+        owl:topObjectProperty
+    
+    Characteristics: 
+        Symmetric
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/descendienteDe>
+
+    SubPropertyOf: 
+        owl:topObjectProperty
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/esposaDe>
+
+    SubPropertyOf: 
+        <http://sid.cps.unizar.es/cónyugeDe>
+    
+    Domain: 
+        <http://sid.cps.unizar.es/Mujer>
+    
+    InverseOf: 
+        <http://sid.cps.unizar.es/maridoDe>
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/hijoDe>
+
+    SubPropertyOf: 
+        <http://sid.cps.unizar.es/descendienteDe>
+    
+    InverseOf: 
+        <http://sid.cps.unizar.es/tieneHijo>
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/maridoDe>
+
+    SubPropertyOf: 
+        <http://sid.cps.unizar.es/cónyugeDe>
+    
+    Domain: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    InverseOf: 
+        <http://sid.cps.unizar.es/esposaDe>
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/nietoDe>
+
+    SubPropertyOf: 
+        <http://sid.cps.unizar.es/descendienteDe>
+    
+    InverseOf: 
+        <http://sid.cps.unizar.es/abueloDe>
+    
+    
+ObjectProperty: <http://sid.cps.unizar.es/tieneHijo>
+
+    SubPropertyOf: 
+        owl:topObjectProperty
+    
+    InverseOf: 
+        <http://sid.cps.unizar.es/hijoDe>
+    
+    
+ObjectProperty: owl:topObjectProperty
+
+    
+Class: <http://sid.cps.unizar.es/Abuelo>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Persona>,
+        <http://sid.cps.unizar.es/abueloDe> some <http://sid.cps.unizar.es/Persona>
+    
+    
+Class: <http://sid.cps.unizar.es/Hombre>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Persona>
+    
+    DisjointWith: 
+        <http://sid.cps.unizar.es/Mujer>
+    
+    
+Class: <http://sid.cps.unizar.es/Madre>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Mujer>,
+        <http://sid.cps.unizar.es/Progenitor>
+    
+    DisjointWith: 
+        <http://sid.cps.unizar.es/Padre>
+    
+    
+Class: <http://sid.cps.unizar.es/Mafioso>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Persona>
+    
+    
+Class: <http://sid.cps.unizar.es/Mujer>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Persona>
+    
+    DisjointWith: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    
+Class: <http://sid.cps.unizar.es/Padre>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Hombre>,
+        <http://sid.cps.unizar.es/Progenitor>
+    
+    DisjointWith: 
+        <http://sid.cps.unizar.es/Madre>
+    
+    
+Class: <http://sid.cps.unizar.es/Persona>
+
+    
+Class: <http://sid.cps.unizar.es/Progenitor>
+
+    SubClassOf: 
+        <http://sid.cps.unizar.es/Persona>,
+        <http://sid.cps.unizar.es/tieneHijo> some <http://sid.cps.unizar.es/Progenitor>
+    
+    
+Individual: <http://sid.cps.unizar.es/Carmela>
+
+    Types: 
+        <http://sid.cps.unizar.es/Mujer>
+    
+    
+Individual: <http://sid.cps.unizar.es/Connie>
+
+    Types: 
+        <http://sid.cps.unizar.es/Mujer>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Carmela>,
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Vito>
+    
+    
+Individual: <http://sid.cps.unizar.es/Don_Corleone>
+
+    Types: 
+        <http://sid.cps.unizar.es/Mafioso>
+    
+    SameAs: 
+        <http://sid.cps.unizar.es/Vito>
+    
+    
+Individual: <http://sid.cps.unizar.es/Fredo>
+
+    Types: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Carmela>,
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Vito>
+    
+    
+Individual: <http://sid.cps.unizar.es/Mary>
+
+    Types: 
+        <http://sid.cps.unizar.es/Mujer>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Michael>
+    
+    
+Individual: <http://sid.cps.unizar.es/Michael>
+
+    Types: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Carmela>,
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Vito>
+    
+    
+Individual: <http://sid.cps.unizar.es/Santino>
+
+    Types: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Carmela>,
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Vito>
+    
+    
+Individual: <http://sid.cps.unizar.es/Vincent>
+
+    Types: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/hijoDe>  <http://sid.cps.unizar.es/Santino>
+    
+    
+Individual: <http://sid.cps.unizar.es/Vito>
+
+    Types: 
+        <http://sid.cps.unizar.es/Hombre>
+    
+    Facts:  
+     <http://sid.cps.unizar.es/maridoDe>  <http://sid.cps.unizar.es/Carmela>
+    
+    SameAs: 
+        <http://sid.cps.unizar.es/Don_Corleone>
+    
+    
+DifferentIndividuals: 
+    <http://sid.cps.unizar.es/Carmela>,<http://sid.cps.unizar.es/Connie>,<http://sid.cps.unizar.es/Don_Corleone>,<http://sid.cps.unizar.es/Fredo>,<http://sid.cps.unizar.es/Mary>,<http://sid.cps.unizar.es/Michael>,<http://sid.cps.unizar.es/Santino>,<http://sid.cps.unizar.es/Vincent>
+
