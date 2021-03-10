@@ -17,9 +17,9 @@ public class jenaQuery {
         Set<String> resultados = new HashSet<String>();
         String sparqlEndpointLive = "http://dbpedia-live.openlinksw.com/sparql";
         String sparqlEndpoint = "https://dbpedia.org/sparql";
-        tendencias.add("Neymar_Jr");
-        tendencias.add("Neymar");
-        tendencias.add("Messi");
+//        tendencias.add("Neymar_Jr");
+//        tendencias.add("Neymar");
+//        tendencias.add("Messi");
 
         for (String tendencia : tendencias) {
 

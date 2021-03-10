@@ -13,7 +13,7 @@ public class P3 {
         try {
             // Carga ontología
             IRI ontologyIRI = IRI.create("http://sid.cps.unizar.es");
-            File file = new File("SIDpractica3.owl");
+            File file = new File("el-padrino.owl");
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
             OWLOntology ont = manager.loadOntologyFromOntologyDocument(file);
             OWLDataFactory factory = manager.getOWLDataFactory();
