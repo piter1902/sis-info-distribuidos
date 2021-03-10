@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: jenaQuery
+Class-Path: twitter4j-core-4.0.7.jar
+
