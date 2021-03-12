@@ -46,8 +46,11 @@ public class P3 {
             createSeparatorWithText("Mostrando individuos que son descendientes de Vito");
             printDescendientesVito();
 
-            createSeparatorWithText("Mostrando individuos que es padre de Michael");
+            createSeparatorWithText("Mostrando individuos que son padre de Michael");
             printPadreMichael();
+
+            createSeparatorWithText("Mostrando individuo que es abuela de Vincent");
+            printAbuelaVincent();
 
 
             // Salvamos la ontología
@@ -82,7 +85,7 @@ public class P3 {
 
     private static void printPadreMichael() {
         OWLObjectProperty esHijoDe = factory.getOWLObjectProperty(IRI.create(ontologyIRI + "hijoDe"));
-        OWLClass esPadre = factory.getOWLClass(IRI.create(ontologyIRI + "Hombre"));
+        OWLClass esPadre = factory.getOWLClass(IRI.create(ontologyIRI + "Padre"));
         OWLIndividual michael = factory.getOWLNamedIndividual(IRI.create(ontologyIRI + "Michael"));
         // Usamos la propiedad inversa de hijoDe -> salen todos los progenitores
         OWLClassExpression hijoDe = factory.getOWLObjectHasValue(esHijoDe.getInverseProperty(), michael.asOWLNamedIndividual());
@@ -94,10 +97,18 @@ public class P3 {
         }
     }
 
-    private static void createSeparatorWithText(String message) {
-        System.out.println("*".repeat(24));
-        System.out.println(message);
-        System.out.println("*".repeat(24));
+    private static void printAbuelaVincent() {
+        OWLObjectProperty esAbueloDe = factory.getOWLObjectProperty(IRI.create(ontologyIRI + "abueloDe"));
+        OWLClass esMujer = factory.getOWLClass(IRI.create(ontologyIRI + "Mujer"));
+        OWLIndividual vincent = factory.getOWLNamedIndividual(IRI.create(ontologyIRI + "Vincent"));
+        // Usamos la propiedad inversa de hijoDe -> salen todos los progenitores
+        OWLClassExpression nietoDe = factory.getOWLObjectHasValue(esAbueloDe.getInverseProperty(), vincent.asOWLNamedIndividual());
+        // Calculamos la interseccion
+        OWLClassExpression intersection = factory.getOWLObjectIntersectionOf(nietoDe, esMujer);
+
+        for (OWLNamedIndividual individual : reasoner.getInstances(intersection, false).getFlattened()) {
+            System.out.println(individual.getIRI());
+        }
     }
 
     private static void showAllByClassName(String classname) {
@@ -105,7 +116,6 @@ public class P3 {
         for (OWLNamedIndividual instance : reasoner.getInstances(tClass, false).getFlattened()) {
             System.out.println(instance.getIRI());
         }
-
     }
 
     private static void addMafioso(String mafioso) throws OWLOntologyStorageException {
@@ -117,4 +127,11 @@ public class P3 {
         AddAxiom addAxiom1 = new AddAxiom(ont, axiom1);
         manager.applyChange(addAxiom1);
     }
+
+    private static void createSeparatorWithText(String message) {
+        System.out.println("*".repeat(24));
+        System.out.println(message);
+        System.out.println("*".repeat(24));
+    }
+
 }

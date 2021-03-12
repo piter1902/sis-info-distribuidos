@@ -90,24 +90,41 @@
     <Declaration>
         <NamedIndividual IRI="Vito"/>
     </Declaration>
-    <SubClassOf>
-        <Class IRI="Abuelo"/>
-        <Class IRI="Persona"/>
-    </SubClassOf>
-    <SubClassOf>
+    <EquivalentClasses>
         <Class IRI="Abuelo"/>
         <ObjectSomeValuesFrom>
             <ObjectProperty IRI="abueloDe"/>
             <Class IRI="Persona"/>
         </ObjectSomeValuesFrom>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="Madre"/>
+        <ObjectIntersectionOf>
+            <Class IRI="Mujer"/>
+            <Class IRI="Progenitor"/>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="Padre"/>
+        <ObjectIntersectionOf>
+            <Class IRI="Hombre"/>
+            <Class IRI="Progenitor"/>
+        </ObjectIntersectionOf>
+    </EquivalentClasses>
+    <EquivalentClasses>
+        <Class IRI="Progenitor"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="tieneHijo"/>
+            <Class IRI="Persona"/>
+        </ObjectSomeValuesFrom>
+    </EquivalentClasses>
+    <SubClassOf>
+        <Class IRI="Abuelo"/>
+        <Class IRI="Persona"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Hombre"/>
         <Class IRI="Persona"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="Madre"/>
-        <Class IRI="Mujer"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Madre"/>
@@ -123,22 +140,11 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Padre"/>
-        <Class IRI="Hombre"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="Padre"/>
         <Class IRI="Progenitor"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Progenitor"/>
         <Class IRI="Persona"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="Progenitor"/>
-        <ObjectSomeValuesFrom>
-            <ObjectProperty IRI="tieneHijo"/>
-            <Class IRI="Progenitor"/>
-        </ObjectSomeValuesFrom>
     </SubClassOf>
     <DisjointClasses>
         <Class IRI="Hombre"/>
