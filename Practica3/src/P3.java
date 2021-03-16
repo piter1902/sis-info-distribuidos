@@ -8,6 +8,10 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import java.io.File;
 
 public class P3 {
+    // Constantes de los PATHs de los ficheros
+    public static final String ORIGIN_FILE_PATH = "el-padrino.owl";
+    public static final String RESULT_FILE_PATH = "el-padrino-result.owl";
+
     // Hacemos las variables accesibles para los distintos métodos
     private static OWLDataFactory factory;
     private static OWLOntology ont;
@@ -19,8 +23,8 @@ public class P3 {
         try {
             // Carga ontología
             ontologyIRI = IRI.create("http://sid.cps.unizar.es/");
-            File file = new File("pruebas/el-padrino.owl");
-            File fileDest = new File("pruebas/el-padrino-result.owl");
+            File file = new File(ORIGIN_FILE_PATH);
+            File fileDest = new File(RESULT_FILE_PATH);
             manager = OWLManager.createOWLOntologyManager();
             ont = manager.loadOntologyFromOntologyDocument(file);
             factory = manager.getOWLDataFactory();
@@ -57,7 +61,7 @@ public class P3 {
 
             // Salvamos la ontología
             manager.saveOntology(ont, IRI.create(fileDest.toURI()));
-            createSeparatorWithText("Ontología salvada correctamente");
+            createSeparatorWithText("Ontología salvada correctamente en el fichero: " + RESULT_FILE_PATH);
         } catch (Exception e) {
             System.err.println("Exception: " + e);
         }

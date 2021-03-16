@@ -6,7 +6,6 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      ontologyIRI="http://sid.cps.unizar.es/">
-    <Prefix name="" IRI="http://sid.cps.unizar.es/"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
@@ -90,41 +89,24 @@
     <Declaration>
         <NamedIndividual IRI="Vito"/>
     </Declaration>
-    <EquivalentClasses>
-        <Class IRI="Abuelo"/>
-        <ObjectSomeValuesFrom>
-            <ObjectProperty IRI="abueloDe"/>
-            <Class IRI="Persona"/>
-        </ObjectSomeValuesFrom>
-    </EquivalentClasses>
-    <EquivalentClasses>
-        <Class IRI="Madre"/>
-        <ObjectIntersectionOf>
-            <Class IRI="Mujer"/>
-            <Class IRI="Progenitor"/>
-        </ObjectIntersectionOf>
-    </EquivalentClasses>
-    <EquivalentClasses>
-        <Class IRI="Padre"/>
-        <ObjectIntersectionOf>
-            <Class IRI="Hombre"/>
-            <Class IRI="Progenitor"/>
-        </ObjectIntersectionOf>
-    </EquivalentClasses>
-    <EquivalentClasses>
-        <Class IRI="Progenitor"/>
-        <ObjectSomeValuesFrom>
-            <ObjectProperty IRI="tieneHijo"/>
-            <Class IRI="Persona"/>
-        </ObjectSomeValuesFrom>
-    </EquivalentClasses>
     <SubClassOf>
         <Class IRI="Abuelo"/>
         <Class IRI="Persona"/>
     </SubClassOf>
     <SubClassOf>
+        <Class IRI="Abuelo"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="abueloDe"/>
+            <Class IRI="Persona"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <SubClassOf>
         <Class IRI="Hombre"/>
         <Class IRI="Persona"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="Madre"/>
+        <Class IRI="Mujer"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Madre"/>
@@ -140,11 +122,22 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Padre"/>
+        <Class IRI="Hombre"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="Padre"/>
         <Class IRI="Progenitor"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="Progenitor"/>
         <Class IRI="Persona"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="Progenitor"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="tieneHijo"/>
+            <Class IRI="Progenitor"/>
+        </ObjectSomeValuesFrom>
     </SubClassOf>
     <DisjointClasses>
         <Class IRI="Hombre"/>
