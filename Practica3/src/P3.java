@@ -1,6 +1,8 @@
 import org.semanticweb.HermiT.Reasoner;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.reasoner.Node;
+import org.semanticweb.owlapi.reasoner.NodeSet;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import java.io.File;
@@ -102,12 +104,12 @@ public class P3 {
         OWLClass esMujer = factory.getOWLClass(IRI.create(ontologyIRI + "Mujer"));
         OWLIndividual vincent = factory.getOWLNamedIndividual(IRI.create(ontologyIRI + "Vincent"));
         // Usamos la propiedad inversa de hijoDe -> salen todos los progenitores
-        OWLClassExpression nietoDe = factory.getOWLObjectHasValue(esAbueloDe.getInverseProperty(), vincent.asOWLNamedIndividual());
-        // Calculamos la interseccion
-        OWLClassExpression intersection = factory.getOWLObjectIntersectionOf(nietoDe, esMujer);
-
-        for (OWLNamedIndividual individual : reasoner.getInstances(intersection, false).getFlattened()) {
-            System.out.println(individual.getIRI());
+        NodeSet<OWLNamedIndividual> nietoDe = reasoner.getObjectPropertyValues(vincent.asOWLNamedIndividual(), esAbueloDe.getInverseProperty());
+        for (OWLNamedIndividual individual : nietoDe.getFlattened()) {
+            // SOlo mostramos el individuo si es miembro de la clase mujer
+            if (esMujer.getIndividuals(ont).contains(individual)) {
+                System.out.println(individual.getIRI());
+            }
         }
     }
 
