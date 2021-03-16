@@ -34,7 +34,7 @@ public class P3 {
             reasoner = new Reasoner.ReasonerFactory().createReasoner(ont);
             reasoner.precomputeInferences();
             // Ejemplo de consulta: consistencia
-            System.out.println(reasoner.isConsistent());
+            System.out.println(reasoner.isConsistent() ? "Ontologia consistente" : "Ontologia inconsistente");
             // Lanzamos consultas de la práctica
             createSeparatorWithText("Mostrando individuos de la clase: Hombre");
             showAllByClassName("Hombre");
@@ -123,11 +123,11 @@ public class P3 {
     private static void addMafioso(String mafioso) throws OWLOntologyStorageException {
         OWLClass tClass = factory.getOWLClass(IRI.create(ontologyIRI + "Mafioso"));
         OWLNamedIndividual tIndividual = factory.getOWLNamedIndividual(IRI.create(ontologyIRI + mafioso));
-        System.out.println("Creado individuo: " + tIndividual.getIRI());
 
         OWLClassAssertionAxiom axiom1 = factory.getOWLClassAssertionAxiom(tClass, tIndividual);
         AddAxiom addAxiom1 = new AddAxiom(ont, axiom1);
         manager.applyChange(addAxiom1);
+        System.out.println("Creado individuo: " + tIndividual.getIRI());
     }
 
     private static void createSeparatorWithText(String message) {
