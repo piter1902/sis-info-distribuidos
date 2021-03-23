@@ -1,27 +1,40 @@
 package com.example.practica4;
 
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 //import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
     private final static String TAG = "MainActivity";
+
+    // Fetch Async Task
     private MyAsyncTask myTask = null;
+
+    // State: JSON Array of Publications
+    private List<Map<String, Object>> publications = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
+
         setContentView(R.layout.activity_main);
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,16 +43,20 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-// Para obtener el valor devuelto en onRetainCustomNonConfigurationInstance
+
+        // Para obtener el valor devuelto en onRetainCustomNonConfigurationInstance
         myTask = (MyAsyncTask) getLastCustomNonConfigurationInstance();
+
         if (myTask == null) {
-// Evita crear una AsyncTask cada vez que, por ejemplo, hay una rotación
+            // Evita crear una AsyncTask cada vez que, por ejemplo, hay una rotación
             Log.i(TAG, "onCreate: About to create MyAsyncTask");
             myTask = new MyAsyncTask(this);
             // Hacemos la petición a la API
             myTask.execute("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e45df953d132e8de1fac638da4ed55bc&format=json");
-        } else
+        } else {
             myTask.attach(this);
+        }
+
         Toast.makeText(this, "Hola!", Toast.LENGTH_LONG).show();
     }
 
@@ -50,16 +67,33 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
-// Además de devolver mi tarea, elimino la referencia en mActivity
+        // Además de devolver mi tarea, elimino la referencia en mActivity
         myTask.detach();
-// Devuelvo mi tarea, para que no se cree de nuevo cada vez
+
+        // Devuelvo mi tarea, para que no se cree de nuevo cada vez
         return myTask;
     }
 
     public void setupAdapter(Integer integer) {
-        if (integer != -1)
-            Toast.makeText(MainActivity.this,
-                    "Codigo de respuesta: " + integer, Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this,
+                "Codigo de respuesta: " + integer, Toast.LENGTH_LONG).show();
+
+        if (integer == HttpURLConnection.HTTP_OK) {
+            // Aqui publications tiene valor seguro. Lo leemos
+            synchronized (getPublications()) {
+                Log.d("MainActivity", new Gson().toJson(publications));
+            }
+        }
+    }
+
+
+    // Getters && seters
+    public List<Map<String, Object>> getPublications() {
+        return publications;
+    }
+
+    public void setPublications(List<Map<String, Object>> publications) {
+        this.publications = publications;
     }
 }
 
