@@ -1,10 +1,14 @@
 package com.example.practica4;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
     // State: JSON Array of Publications
     private List<Map<String, Object>> publications = new ArrayList<>();
 
+    // Adapter to ListView
+    private ListView listview;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // Enlace a ListView
+        listview = (ListView) findViewById(R.id.list);
 
         // Para obtener el valor devuelto en onRetainCustomNonConfigurationInstance
         myTask = (MyAsyncTask) getLastCustomNonConfigurationInstance();
@@ -74,15 +84,28 @@ public class MainActivity extends AppCompatActivity {
         return myTask;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void setupAdapter(Integer integer) {
+        // Lista de titulos de fotos
+        ArrayList<String> titles = new ArrayList<>();
+        ArrayList<String> owner = new ArrayList<>();
+
         Toast.makeText(MainActivity.this,
                 "Codigo de respuesta: " + integer, Toast.LENGTH_LONG).show();
 
         if (integer == HttpURLConnection.HTTP_OK) {
             // Aqui publications tiene valor seguro. Lo leemos
             synchronized (getPublications()) {
-                Log.d("MainActivity", new Gson().toJson(publications));
+                // Introducimos los titulos de las fotos en un Array
+                publications.stream().forEach((element) -> {
+                    titles.add(((String) element.get("title")));
+                    owner.add(((String) element.get("owner")));
+
+                });
             }
+
+            ListAdapter adapter = new ListAdapter(this, titles, owner);
+            listview.setAdapter(adapter);
         }
     }
 
