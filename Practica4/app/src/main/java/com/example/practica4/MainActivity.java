@@ -1,19 +1,18 @@
 package com.example.practica4;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.Map;
 
 //import android.support.v7.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchAlertDialog.NoticeDialogListener {
 
     private final static String TAG = "MainActivity";
 
@@ -38,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // To create dialog
+        Activity activity = this;
+
         Log.i(TAG, "onCreate");
 
         setContentView(R.layout.activity_main);
@@ -46,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Implementar funcionalidad de búsqueda", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Implementar funcionalidad de búsqueda", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                DialogFragment searchFragment = new SearchAlertDialog(activity);
+                searchFragment.show(getSupportFragmentManager(), "search");
             }
         });
 
@@ -62,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "onCreate: About to create MyAsyncTask");
             myTask = new MyAsyncTask(this);
             // Hacemos la petición a la API
-            myTask.execute("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent&api_key=e45df953d132e8de1fac638da4ed55bc&format=json");
+            myTask.execute("https://api.flickr.com/services/rest/?method=flickr.photos.getRecent" +
+                    "&api_key=e45df953d132e8de1fac638da4ed55bc&format=json");
         } else {
             myTask.attach(this);
         }
@@ -117,6 +123,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void setPublications(List<Map<String, Object>> publications) {
         this.publications = publications;
+    }
+
+    // To interact with dialog
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String text) {
+        // Take text and perform search
+        myTask.detach();
+        // Create new AsynTask
+        myTask = new MyAsyncTask(this);
+        // Hacemos la petición a la API
+        myTask.execute(
+                "https://api.flickr.com/services/rest/?method=flickr.photos.search&text=" +
+                        text + "&api_key=e45df953d132e8de1fac638da4ed55bc&format=json");
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        Toast.makeText(this, "Búsqueda cancelada", Toast.LENGTH_SHORT).show();
     }
 }
 
