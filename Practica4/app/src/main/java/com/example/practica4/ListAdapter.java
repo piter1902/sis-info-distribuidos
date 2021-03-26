@@ -15,15 +15,16 @@ public class ListAdapter extends ArrayAdapter<String> {
     private final Activity context;
     private final ArrayList<String> maintitle;
     private final ArrayList<String> subtitle;
+    private final ArrayList<String> ids;
 //    private final Integer[] imgid;
 
-    public ListAdapter(Activity context, ArrayList<String> maintitle, ArrayList<String> subtitle) {
+    public ListAdapter(Activity context, ArrayList<String> maintitle, ArrayList<String> subtitle, ArrayList<String> ids) {
         super(context, R.layout.list_main, maintitle);
-        // TODO Auto-generated constructor stub
 
         this.context = context;
         this.maintitle = maintitle;
         this.subtitle = subtitle;
+        this.ids = ids;
 //        this.imgid=imgid;
 
     }
@@ -42,6 +43,10 @@ public class ListAdapter extends ArrayAdapter<String> {
 
         return rowView;
 
+    }
+
+    public String getIdByIndex(int index) {
+        return this.ids.get(index);
     }
 
 }

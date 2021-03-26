@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements SearchAlertDialog
         // Lista de titulos de fotos
         ArrayList<String> titles = new ArrayList<>();
         ArrayList<String> owner = new ArrayList<>();
+        ArrayList<String> ids = new ArrayList<>();
 
         Toast.makeText(MainActivity.this,
                 "Codigo de respuesta: " + integer, Toast.LENGTH_LONG).show();
@@ -106,12 +108,22 @@ public class MainActivity extends AppCompatActivity implements SearchAlertDialog
                 publications.stream().forEach((element) -> {
                     titles.add(((String) element.get("title")));
                     owner.add(((String) element.get("owner")));
-
+                    ids.add((String) element.get("id"));
                 });
             }
 
-            ListAdapter adapter = new ListAdapter(this, titles, owner);
+            ListAdapter adapter = new ListAdapter(this, titles, owner, ids);
             listview.setAdapter(adapter);
+            // Navigate to new page
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long idRow) {
+                    // Obtenemos el id del elemento correspondiente (i-esimo)
+                    String publicationId = adapter.getIdByIndex(position);
+                    // Create new Intent to change Activity
+                    // Bundle to pass info to new Activity
+                }
+            });
         }
     }
 
