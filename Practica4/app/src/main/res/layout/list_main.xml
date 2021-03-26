@@ -11,7 +11,8 @@
         android:padding="5dp"
         android:src="@drawable/flickr_logo"/>
 
-    <LinearLayout android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
@@ -19,32 +20,35 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium Text"
-            android:textStyle="bold"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:padding="2dp"
-            android:textColor="#4d4d4d" />
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#4d4d4d"
+            android:textStyle="bold" />
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="horizontal"
             android:layout_marginLeft="10dp"
-            android:weightSum="1" >
+            android:orientation="horizontal"
+            android:weightSum="1">
+
             <TextView
                 android:id="@+id/titlename"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="0.7"
                 android:gravity="left"
-                android:textStyle="bold"
-                android:text="Owner:" />
+                android:text="Owner:"
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/subtitle"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="0.3"
                 android:text="TexField" />
         </LinearLayout>
     </LinearLayout>
