@@ -1,6 +1,7 @@
 package com.example.practica4;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements SearchAlertDialog
 
             ListAdapter adapter = new ListAdapter(this, titles, owner, ids);
             listview.setAdapter(adapter);
+
             // Navigate to new page
             listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -121,7 +123,10 @@ public class MainActivity extends AppCompatActivity implements SearchAlertDialog
                     // Obtenemos el id del elemento correspondiente (i-esimo)
                     String publicationId = adapter.getIdByIndex(position);
                     // Create new Intent to change Activity
+                    Intent intent = new Intent(getApplicationContext(), DetailPhotoActivity.class);
                     // Bundle to pass info to new Activity
+                    intent.putExtra("pubId", publicationId);
+                    startActivity(intent);
                 }
             });
         }
