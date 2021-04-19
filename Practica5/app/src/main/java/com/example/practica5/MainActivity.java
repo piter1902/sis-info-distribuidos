@@ -1,6 +1,7 @@
 package com.example.practica5;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.os.Looper;
 import android.util.Log;
@@ -30,15 +32,19 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    private static final int REQUEST_CODE_ASK_PERMISSIONS = 123;
+    public static final String TAG = "MainActivity";
+
     // Creamos cliente de google
     private FusedLocationProviderClient fusedLocationClient;
     private GoogleApiClient googleApiClient;
-    private MyAsyncTask myTask;
+
     private Double latit;
     private Double longi;
 
@@ -53,24 +59,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "onClick: Pulso botón");
                 LocationRequest locationRequest = new LocationRequest();
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 locationRequest.setNumUpdates(1);
                 locationRequest.setInterval(0);
                 if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
+
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                            REQUEST_CODE_ASK_PERMISSIONS);
                     // here to request the missing permissions, and then overriding
                     //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
                     //                                          int[] grantResults)
                     // to handle the case where the user grants the permission. See the documentation
                     // for ActivityCompat#requestPermissions for more details.
+                    Log.d(TAG, "No tenemos permisos");
                     return;
                 }
+
                 fusedLocationClient.requestLocationUpdates(locationRequest,
                         new LocationCallback() {
                             @Override
                             public void onLocationResult(LocationResult result) {
+                                Log.d(TAG, "onLocationResult: Inicio");
                                 if (result == null)
                                     return;
                                 int lastIndex = result.getLocations().size() - 1;
@@ -80,31 +92,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                                 // Actualizamos los valores de lat y lon
                                 latit = location.getLatitude();
                                 longi = location.getLongitude();
-                
-                                // Una vez obtenida la location, llamamos a asynctask para que realice la peticion a flickr
-                                myTask = (MyAsyncTask) getLastCustomNonConfigurationInstance();
+                                Log.d(TAG, "Lat actualizada: " + latit + " | Long actualizada: " + longi);
 
-                                if (myTask == null) {
-                                    // Evita crear una AsyncTask cada vez que, por ejemplo, hay una rotación
+                                // Create new Intent to change Activity
+                                Intent intent = new Intent(getApplicationContext(), DetailPhotoActivity.class);
+                                // Bundle to pass info to new Activity
+                                intent.putExtra("lat", latit.toString());
+                                intent.putExtra("lon", longi.toString());
 
-                                    myTask = new MyAsyncTask(MainActivity.this);
+                                startActivity(intent);
 
-                                    // Creamos la uri para realizar la petición
-                                    Uri queryFlickr = Uri.parse("https://api.flickr.com/services/rest/")
-                                            .buildUpon()
-                                            .appendQueryParameter("api_key", "e45df953d132e8de1fac638da4ed55bc")
-                                            .appendQueryParameter("method", "flickr.photos.search")
-                                            .appendQueryParameter("lat", latit.toString())
-                                            .appendQueryParameter("lon", longi.toString())
-                                            .appendQueryParameter("format", "json")
-                                            .appendQueryParameter("extras", "url_s")
-                                            .build();
-                                    Log.i("MainActivity", "Query: " + queryFlickr.toString());
-                                    // Hacemos la petición a la API
-                                    myTask.execute(queryFlickr.toString());
-                                } else {
-                                    myTask.attach(MainActivity.this);
-                                }
                             }
                         },
                         Looper.getMainLooper()
@@ -121,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Log.d(TAG, "No tenemos permisos");
             return;
         }
         fusedLocationClient.getLastLocation().addOnSuccessListener(this,
@@ -130,6 +128,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         if (location != null) {
                             latit = location.getLatitude();
                             longi = location.getLongitude();
+                            Log.d(TAG, "Lat: " + latit + " | Long: " + longi);
+                        } else {
+
                         }
                     }
                 }
@@ -140,17 +141,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onStart() {
         super.onStart();
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(LocationServices.API)
-                .build();
-        googleApiClient.connect();
+        if (googleApiClient != null && !googleApiClient.isConnected()) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .enableAutoManage(this, this)
+                    .addApi(LocationServices.API)
+                    .build();
+            googleApiClient.connect();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        googleApiClient.disconnect();
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -177,5 +182,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    // Rutina que se ejecuta al aceptar
+                } else {
+                    // Permission Denied
+                    Toast.makeText(MainActivity.this, "No se aceptó permisos", Toast.LENGTH_SHORT).show();
+                }
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

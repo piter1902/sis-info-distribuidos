@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class MyAsyncTask extends AsyncTask<String, Void, Integer> {
 
-    private MainActivity mActivity = null;
+    private DetailPhotoActivity dActivity = null;
 
-    public MyAsyncTask(MainActivity activity) {
+    public MyAsyncTask(DetailPhotoActivity activity) {
         attach(activity);
     }
 
@@ -55,12 +55,16 @@ public class MyAsyncTask extends AsyncTask<String, Void, Integer> {
                 // Get photo object from photos entry
                 List<Map<String, Object>> photoList =
                         ((List<Map<String, Object>>) ((Map) map.get("photos")).get("photo"));
-                for (Map<String, Object> stringObjectMap : photoList) {
-                    Log.d("MyAsyncTask", ((String) stringObjectMap.get("id")));
-                }
+
+//                for (Map<String, Object> stringObjectMap : photoList) {
+//                    Log.d("MyAsyncTask", ((String) stringObjectMap.get("id")));
+//                }
+
+                // Obtenemos la primera foto de la consulta que es la más cercana
+                Map<String, Object> photoInfo = photoList.get(0);
                 // Exclusion mutua
-                synchronized (mActivity.getPublications()) {
-                    mActivity.setPublications(photoList);
+                synchronized (dActivity.getPhotoInfo()) {
+                    dActivity.setPhotoInfo(photoInfo);
                 }
             }
             return responseCode;
@@ -72,17 +76,22 @@ public class MyAsyncTask extends AsyncTask<String, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer integer) {
-        if (mActivity == null)
+        if (dActivity == null)
             Log.i("MyAsyncTask", "Me salto onPostExecute() -- no hay nueva activity");
-        else
-            mActivity.setupAdapter(integer);
+        else {
+            try {
+                dActivity.setupAdapter(integer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     void detach() {
-        this.mActivity = null;
+        this.dActivity = null;
     }
 
-    void attach(MainActivity activity) {
-        this.mActivity = activity;
+    void attach(DetailPhotoActivity activity) {
+        this.dActivity = activity;
     }
 }
