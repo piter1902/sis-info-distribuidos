@@ -4,6 +4,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <permission
+        android:name="com.example.practica5.DetailPhotoActivity.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" >
+    </permission>
 
     <application
         android:allowBackup="true"
@@ -30,6 +34,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBxOP9kahZMh8UWACRtvaPKrP_ToKTyliM"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

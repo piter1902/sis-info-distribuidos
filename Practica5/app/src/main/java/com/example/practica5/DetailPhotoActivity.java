@@ -10,6 +10,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -17,7 +23,7 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DetailPhotoActivity extends AppCompatActivity {
+public class DetailPhotoActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "DetailPhotoActivity";
     private static final String IMAGEPATH = "https://live.staticflickr.com/";
@@ -25,10 +31,18 @@ public class DetailPhotoActivity extends AppCompatActivity {
     private ImageView imageView;
     private TextView titleView;
     private TextView descriptionView;
+    private MapView mapView;
 
-    // Latitud & Longitud
+    // Instancia de gmap
+    private GoogleMap gmap;
+
+    // Latitud & Longitud del usuario
     private String lat;
     private String lon;
+
+    // Latitud & Longitud de la foto
+    private String imgLat;
+    private String imgLon;
 
     // Fetch Async Task
     private MyAsyncTask myTask = null;
@@ -50,6 +64,8 @@ public class DetailPhotoActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView3);
         titleView = findViewById(R.id.detailTitle);
         descriptionView = findViewById(R.id.description);
+        mapView = findViewById(R.id.mapView);
+
 
         // Una vez obtenida la location, llamamos a asynctask para que realice la peticion a flickr
         myTask = (MyAsyncTask) getLastCustomNonConfigurationInstance();
@@ -67,7 +83,7 @@ public class DetailPhotoActivity extends AppCompatActivity {
                     .appendQueryParameter("lat", lat)
                     .appendQueryParameter("lon", lon)
                     .appendQueryParameter("format", "json")
-                    .appendQueryParameter("extras", "url_s,description")
+                    .appendQueryParameter("extras", "url_s,description,geo")
                     .build();
             Log.i("MainActivity", "Query: " + queryFlickr.toString());
             // Hacemos la petición a la API
@@ -75,6 +91,7 @@ public class DetailPhotoActivity extends AppCompatActivity {
         } else {
             myTask.attach(DetailPhotoActivity.this);
         }
+
     }
 
     // Source: https://stackoverflow.com/questions/31330122/android-navigate-back-to-activity-dont-reload-parent/31331757
@@ -104,7 +121,7 @@ public class DetailPhotoActivity extends AppCompatActivity {
         String descriptionContent;
         String titleContent;
         String imageUrl;
-//        String imageId;
+        //        String imageId;
 //        String imageSecret;
 //        String imageServer;
 
@@ -113,6 +130,8 @@ public class DetailPhotoActivity extends AppCompatActivity {
                 // Obtain info from Gson
                 descriptionContent = ((String) ((Map) photoInfo.get("description")).get("_content"));
                 titleContent = (String) (photoInfo.get("title"));
+                imgLat = (String) (photoInfo.get("latitude"));
+                imgLon = (String) (photoInfo.get("longitude"));
 //                imageUrl = ((String) ((Map) ((List) ((Map) photoInfo.get("urls")).get("url")).get(0)).get("_content"));
 //                imageId = ((String) photoInfo.get("id"));
 //                imageSecret = ((String) photoInfo.get("secret"));
@@ -130,6 +149,28 @@ public class DetailPhotoActivity extends AppCompatActivity {
             titleView.setText(!titleContent.isEmpty() ? titleContent : "No title");
             descriptionView.setText(!descriptionContent.isEmpty() ? descriptionContent : "No description");
             Picasso.get().load(imageUrl).into(imageView);
+
+            // Hacemos que se cargue el mapa con los marcadores
+            mapView.onCreate(new Bundle());
+            mapView.getMapAsync(this);
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG, "onMapReady: Creando markers en el mapa");
+        gmap = googleMap;
+        gmap.setMinZoomPreference(12);
+        LatLng userPosition = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
+        gmap.moveCamera(CameraUpdateFactory.newLatLng(userPosition));
+
+        // Ponemos el marker de la ubicación del usuario
+        googleMap.addMarker(new MarkerOptions()
+                .position(userPosition)
+                .title("Mi posición"));
+        // Ponemos el marker de la ubicación de la imagen
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(Double.parseDouble(imgLat), Double.parseDouble(imgLon)))
+                .title("Posición de la foto"));
     }
 }
