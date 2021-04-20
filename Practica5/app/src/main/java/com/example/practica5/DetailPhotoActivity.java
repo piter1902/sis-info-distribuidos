@@ -91,7 +91,8 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
         } else {
             myTask.attach(DetailPhotoActivity.this);
         }
-
+        // Hacemos que se cargue el mapa con los marcadores
+        mapView.onCreate(new Bundle());
     }
 
     // Source: https://stackoverflow.com/questions/31330122/android-navigate-back-to-activity-dont-reload-parent/31331757
@@ -150,8 +151,7 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
             descriptionView.setText(!descriptionContent.isEmpty() ? descriptionContent : "No description");
             Picasso.get().load(imageUrl).into(imageView);
 
-            // Hacemos que se cargue el mapa con los marcadores
-            mapView.onCreate(new Bundle());
+
             mapView.getMapAsync(this);
         }
     }
@@ -163,7 +163,7 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
         gmap.setMinZoomPreference(12);
         LatLng userPosition = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
         gmap.moveCamera(CameraUpdateFactory.newLatLng(userPosition));
-
+        gmap.animateCamera(CameraUpdateFactory.newLatLngZoom(userPosition,14));
         // Ponemos el marker de la ubicación del usuario
         googleMap.addMarker(new MarkerOptions()
                 .position(userPosition)
@@ -172,5 +172,23 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(Double.parseDouble(imgLat), Double.parseDouble(imgLon)))
                 .title("Posición de la foto"));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
     }
 }
