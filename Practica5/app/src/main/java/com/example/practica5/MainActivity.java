@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public static final String TAG = "MainActivity";
 
     // Creamos cliente de google
-    private FusedLocationProviderClient fusedLocationClient;
+        private FusedLocationProviderClient fusedLocationClient;
     private GoogleApiClient googleApiClient;
 
     private Double latit;

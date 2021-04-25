@@ -66,7 +66,6 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
         descriptionView = findViewById(R.id.description);
         mapView = findViewById(R.id.mapView);
 
-
         // Una vez obtenida la location, llamamos a asynctask para que realice la peticion a flickr
         myTask = (MyAsyncTask) getLastCustomNonConfigurationInstance();
 
@@ -122,9 +121,6 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
         String descriptionContent;
         String titleContent;
         String imageUrl;
-        //        String imageId;
-//        String imageSecret;
-//        String imageServer;
 
         if (integer == HttpURLConnection.HTTP_OK) {
             synchronized (getPhotoInfo()) {
@@ -133,12 +129,6 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
                 titleContent = (String) (photoInfo.get("title"));
                 imgLat = (String) (photoInfo.get("latitude"));
                 imgLon = (String) (photoInfo.get("longitude"));
-//                imageUrl = ((String) ((Map) ((List) ((Map) photoInfo.get("urls")).get("url")).get(0)).get("_content"));
-//                imageId = ((String) photoInfo.get("id"));
-//                imageSecret = ((String) photoInfo.get("secret"));
-//                imageServer = ((String) photoInfo.get("server"));
-                // Source: https://www.flickr.com/services/api/misc.urls.html
-//                imageUrl = IMAGEPATH + imageServer + "/" + imageId + "_" + imageSecret + ".jpg";
 
                 imageUrl = (String) (photoInfo.get("url_s"));
                 Log.d(TAG, "Description: " + descriptionContent);
@@ -150,7 +140,6 @@ public class DetailPhotoActivity extends AppCompatActivity implements OnMapReady
             titleView.setText(!titleContent.isEmpty() ? titleContent : "No title");
             descriptionView.setText(!descriptionContent.isEmpty() ? descriptionContent : "No description");
             Picasso.get().load(imageUrl).into(imageView);
-
 
             mapView.getMapAsync(this);
         }
