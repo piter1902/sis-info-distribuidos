@@ -6,5 +6,8 @@ public class Principal {
 
         // Ejercicio 2
         Ejercicio2.ejercicio2();
+
+        // Ejercicio 3
+        Ejercicio3.ejercicio3();
     }
 }

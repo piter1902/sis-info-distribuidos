@@ -10,9 +10,9 @@ import jfml.term.FuzzyTermType;
 
 import java.util.Scanner;
 
-public class Ejercicio2 {
+public class Ejercicio3 {
 
-    public static void ejercicio2() {
+    public static void ejercicio3() {
         // Input del usuario
         Scanner scanner = new Scanner(System.in);
         System.out.print("Introduzca la velocidad angular del péndulo: ");
@@ -21,7 +21,20 @@ public class Ejercicio2 {
         System.out.print("Introduzca el angulo del péndulo: ");
         Float anguloEntrada = scanner.nextFloat();
 
-        // Computacion del ejercicio 2
+        String metAgr = "";
+        do {
+            System.out.print("Introduzca el método de agregacion (MAX o PROBOR): ");
+            metAgr = scanner.next();
+        } while (!metAgr.equals("MAX") && !metAgr.equals("PROBOR"));
+
+        String metDefuzz = "";
+        do {
+            System.out.print("Introduzca el método de defuzzificacion (MOM o COG): ");
+            metDefuzz = scanner.next();
+        } while (!metDefuzz.equals("COG") && !metDefuzz.equals("MOM"));
+
+
+        // Computacion del ejercicio 3
         FuzzyInferenceSystem fis = new FuzzyInferenceSystem("Péndulo invertido");
         KnowledgeBaseType kb = new KnowledgeBaseType();
         fis.setKnowledgeBase(kb);
@@ -72,8 +85,8 @@ public class Ejercicio2 {
         kb.addVariable(velocidad);
         velocidad.setType("output");
         velocidad.setDefaultValue(0f); // de tipo float
-        velocidad.setAccumulation("MAX");
-        velocidad.setDefuzzifierName("COG");
+        velocidad.setAccumulation(metAgr);
+        velocidad.setDefuzzifierName(metDefuzz);
         // Términos lingüísticos de Ángulo
         FuzzyTermType velPlaNG = new FuzzyTermType("Negativa Grande",
                 FuzzyTermType.TYPE_leftLinearShape, (new float[]{-2f, -1f}));
