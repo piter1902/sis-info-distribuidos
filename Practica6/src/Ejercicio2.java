@@ -21,6 +21,8 @@ public class Ejercicio2 {
         System.out.print("Introduzca el angulo del péndulo: ");
         Float anguloEntrada = scanner.nextFloat();
 
+        scanner.close();
+
         // Computacion del ejercicio 2
         FuzzyInferenceSystem fis = new FuzzyInferenceSystem("Péndulo invertido");
         KnowledgeBaseType kb = new KnowledgeBaseType();

@@ -33,6 +33,7 @@ public class Ejercicio3 {
             metDefuzz = scanner.next();
         } while (!metDefuzz.equals("COG") && !metDefuzz.equals("MOM"));
 
+        scanner.close();
 
         // Computacion del ejercicio 3
         FuzzyInferenceSystem fis = new FuzzyInferenceSystem("Péndulo invertido");
